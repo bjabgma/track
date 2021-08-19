@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}
+About us
+{% endblock %}
+{% block content %}
+<p>About page</p>
+<img src="{{ url_for('static', filename='pixel.gif', page='/about.html') }}"/>
+
+{% endblock %}

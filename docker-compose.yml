@@ -1,0 +1,17 @@
+version: '3.4'
+services:
+  track:
+    image: track
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000:5000
+#    links:
+#      - mongo  
+#  mongo:
+#    image: mongo:latest
+#    ports:
+#      - 27017:27017
+#    volumes:
+#      - ./mongodb_data:/var/lib/mongodb     
