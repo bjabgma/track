@@ -15,16 +15,14 @@ app.db = client.trackDB
 trackdb = app.db["track"]
 userdb = app.db["user"]
 
-try:
-    currentId = userdb.find({})[0]['userid']
-except (IndexError, KeyError):
-    userdb.insert({'userid': 0})
-
 
 def get_next_userid():
-    currentid = userdb.find({})[0]['userid']
+    try:
+        currentid = userdb.find({})[0]['userid']
+    except (IndexError, KeyError):
+        userdb.insert({'userid': 0})
     nextid = currentid + 1
-    userdb.update({}, {"$set": {"userId": nextid}})
+    userdb.update({}, {"$set": {"userid": nextid}})
     return nextid
 
 
@@ -74,6 +72,7 @@ def report():
     for track in tracks:
         track_pages.add(track.get('url'))
 
+    # create tabulate table
     headers = ["url", "page views", "visitors"]
     rows = []
     for page in track_pages:
@@ -84,6 +83,13 @@ def report():
         ])
 
     return tabulate(rows, headers)
+
+
+@app.route("/clearcookie/")
+def clearcookie():
+    response = make_response("<h1>cookie is cleared</h1>")
+    response.set_cookie('userid', '', expires=0)
+    return response
 
 
 @app.route('/static/pixel.gif')
@@ -97,7 +103,6 @@ def returnpixel():
         userid = get_next_userid()
 
     now = datetime.utcnow()
-
     print(now, request.args.get('page'), userid)
 
     trackdb.insert_one({
@@ -108,7 +113,7 @@ def returnpixel():
 
     response = make_response(
         send_file(io.BytesIO(gif_str), mimetype='image/gif'), 200)
-    response.set_cookie('userid', str(userid), max_age=1296000)
+    response.set_cookie('userid', str(userid))
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     return response
