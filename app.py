@@ -8,7 +8,7 @@ from tabulate import tabulate
 app = Flask(__name__)
 
 client = MongoClient(
-    "mongodb+srv://bjab:Emiafreabe69@cluster0.1pmw0.mongodb.net/track?retryWrites=true&w=majority"
+    "mongodb+srv://xxx:yyy@cluster0.1pmw0.mongodb.net/track?retryWrites=true&w=majority"
 )
 
 app.db = client.trackDB
